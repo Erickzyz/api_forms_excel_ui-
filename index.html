@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação - PokéShop</title>
+    <style>
+        :root {
+            --pikachu-yellow: #FFCB05;
+            --pokeball-blue: #3B4CCA;
+            --bg-color: #F5F5F5;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .form-card {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h2 { color: var(--pokeball-blue); margin-bottom: 20px; }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Esconde o radio nativo */
+        input[type="radio"] { display: none; }
+
+        /* Estilo do Card */
+        .option-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option-label:hover {
+            border-color: var(--pikachu-yellow);
+            transform: translateY(-5px);
+        }
+
+        /* Estado Selecionado */
+        input[type="radio"]:checked + .option-label {
+            border-color: var(--pokeball-blue);
+            background-color: #f0f4ff;
+        }
+
+        .emoji { font-size: 40px; margin-bottom: 10px; }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 30px;
+            background-color: var(--pikachu-yellow);
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover { background-color: #e6b800; }
+    </style>
+</head>
+<body>
+
+<form action="https://docs.google.com/forms/d/e/1FAIpQLSc4jr16swDAg4CT3TD6V_JFxwO8f4MuLaift4qbBX-QwNwJCw/formResponse" method="POST" target="_blank">
+    
+    <div class="form-card">
+        <h2>Você indicaria nossa loja?</h2>
+        
+        <div class="options-grid">
+            <input type="radio" id="sim" name="entry.845451432" value="Sim" required>
+            <label for="sim" class="option-label">
+                <span class="emoji">⚡</span>
+                <span>Sim!</span>
+            </label>
+
+            <input type="radio" id="nao" name="entry.845451432" value="Não indicaria">
+            <label for="nao" class="option-label">
+                <span class="emoji">😴</span>
+                <span>Não indicaria</span>
+            </label>
+
+            <input type="radio" id="ressalvas" name="entry.845451432" value="Indicaria, mas com resalvas">
+            <label for="ressalvas" class="option-label">
+                <span class="emoji">🤔</span>
+                <span>Com ressalvas</span>
+            </label>
+
+            <input type="radio" id="mudancas" name="entry.845451432" value="Indicaria depois de implementar mudanças">
+            <label for="mudancas" class="option-label">
+                <span class="emoji">🌱</span>
+                <span>Precisa melhorar</span>
+            </label>
+        </div>
+
+        <button type="submit">Enviar Avaliação</button>
+    </div>
+</form>
+
+</body>
+</html>
