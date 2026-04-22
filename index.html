@@ -1,159 +1,982 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avaliação PokéShop - UI+</title>
-    <style>
-        :root {
-            --pikachu-yellow: #FFCB05;
-            --pokeball-blue: #3B4CCA;
-            --charizard-orange: #F2802B;
-            --bulba-green: #49D0B0;
-            --bg-color: #F8F9FA;
-        }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PokéStore — Avaliação</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --red: #e74c3c;
+    --gold: #f5a623;
+    --dark-blue: #0f3460;
+    --mid-blue: #16213e;
+    --deep: #1a1a2e;
+    --white: #ffffff;
+    --electric: #ffe566;
+    --success: #2ecc71;
+    --radius-sm: 10px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+  }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--bg-color);
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-        }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
-            max-width: 650px;
-            width: 100%;
-        }
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: radial-gradient(ellipse at 20% 20%, #1a1a4e 0%, #0f3460 40%, #1a1a2e 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    overflow-x: hidden;
+  }
 
-        h2 { color: var(--pokeball-blue); margin-bottom: 25px; }
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 40% 30%, rgba(255,255,255,0.9) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 70% 10%, rgba(255,255,255,0.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 50%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 75%, rgba(255,255,255,0.7) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 5% 90%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 45%, rgba(255,255,255,0.9) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 88%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(2px 2px at 15% 40%, rgba(255,230,102,0.6) 0%, transparent 100%),
+      radial-gradient(2px 2px at 75% 35%, rgba(255,230,102,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 48% 12%, rgba(255,230,102,0.7) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+    animation: twinkle 4s ease-in-out infinite alternate;
+  }
 
-        .field-group { margin-bottom: 25px; }
-        
-        label { display: block; margin-bottom: 8px; font-weight: 600; }
+  @keyframes twinkle {
+    from { opacity: 0.7; }
+    to { opacity: 1; }
+  }
 
-        input[type="text"], textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #eee;
-            border-radius: 12px;
-            box-sizing: border-box;
-            transition: 0.3s;
-        }
+  /* Floating particles */
+  .particle {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatParticle linear infinite;
+  }
 
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: var(--pokeball-blue);
-        }
+  @keyframes floatParticle {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+  }
 
-        /* Rating Grid 0-10 */
-        .rating-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
-            gap: 8px;
-        }
+  .wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 520px;
+  }
 
-        .rating-box {
-            text-align: center;
-            padding: 10px 0;
-            border: 2px solid #eee;
-            border-radius: 8px;
-            cursor: pointer;
-        }
+  /* === CARD === */
+  .form-card {
+    background: rgba(15, 25, 60, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow:
+      0 0 60px rgba(231,76,60,0.15),
+      0 0 120px rgba(0,0,50,0.5),
+      inset 0 1px 0 rgba(255,255,255,0.1);
+  }
 
-        input[type="radio"]:checked + label.rating-box {
-            background: var(--pokeball-blue);
-            color: white;
-            border-color: var(--pokeball-blue);
-        }
+  /* === HEADER === */
+  .card-header {
+    position: relative;
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 45%, #2c2c2c 45%, #1a1a1a 100%);
+    padding: 1.75rem 1.5rem 2.5rem;
+    overflow: hidden;
+  }
 
-        /* Recommendation Cards */
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
+  .card-header::before {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 40px;
+    background: rgba(15, 25, 60, 0.85);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+  }
 
-        .option-card {
-            padding: 20px;
-            border: 2px solid #eee;
-            border-radius: 16px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.2s;
-        }
+  /* Pokébola center line */
+  .card-header::after {
+    content: '';
+    position: absolute;
+    top: 0; bottom: 0;
+    left: 50%; width: 3px;
+    background: rgba(0,0,0,0.3);
+    transform: translateX(-50%);
+  }
 
-        input[type="radio"]:checked + .option-card {
-            border-color: var(--pikachu-yellow);
-            background-color: #fffdf0;
-        }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
+    z-index: 2;
+  }
 
-        button {
-            width: 100%;
-            padding: 16px;
-            background: var(--pikachu-yellow);
-            border: none;
-            border-radius: 12px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            margin-top: 20px;
-        }
-    </style>
+  .pokeball-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #e74c3c 50%, #fff 50%);
+    border: 4px solid #111;
+    position: relative;
+    flex-shrink: 0;
+    animation: floatBall 3s ease-in-out infinite;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  }
+  .pokeball-icon::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px; height: 18px;
+    background: #fff;
+    border-radius: 50%;
+    border: 3px solid #111;
+    z-index: 3;
+    box-shadow: 0 0 0 2px #fff;
+  }
+  .pokeball-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 4px;
+    background: #111;
+    transform: translateY(-50%);
+    z-index: 2;
+  }
+
+  @keyframes floatBall {
+    0%,100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-8px) rotate(5deg); }
+  }
+
+  .header-title {
+    color: #fff;
+  }
+  .header-title h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    color: #fff;
+    text-shadow: 2px 2px 0 rgba(0,0,0,0.5);
+    letter-spacing: 0.02em;
+  }
+  .header-title p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    margin-top: 6px;
+    font-weight: 600;
+  }
+
+  /* Deco Pokébolas no header */
+  .deco-ball {
+    position: absolute;
+    border-radius: 50%;
+    opacity: 0.08;
+    border: 3px solid #fff;
+  }
+  .deco-ball-1 { width: 80px; height: 80px; top: -20px; right: 20px; }
+  .deco-ball-2 { width: 40px; height: 40px; bottom: 30px; right: 60px; }
+  .deco-ball-3 { width: 120px; height: 120px; top: -40px; right: -30px; opacity: 0.05; }
+
+  /* Badges de tipo */
+  .type-badges {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .type-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .badge-fire { background: rgba(231,76,60,0.35); color: #ff9f8a; border: 1px solid rgba(231,76,60,0.3); }
+  .badge-electric { background: rgba(245,166,35,0.35); color: #ffd077; border: 1px solid rgba(245,166,35,0.3); }
+  .badge-water { background: rgba(52,152,219,0.35); color: #7ec8ff; border: 1px solid rgba(52,152,219,0.3); }
+
+  /* === APP PREVIEW === */
+  .app-preview {
+    margin: 1.5rem 1.25rem 0;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+  }
+
+  .preview-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 10px;
+  }
+
+  .screens-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .app-screen {
+    background: linear-gradient(160deg, #1e3799 0%, #0c2461 100%);
+    border-radius: 10px;
+    aspect-ratio: 9/16;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    border: 1px solid rgba(255,255,255,0.1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .app-screen:hover { transform: translateY(-3px); border-color: var(--gold); }
+
+  .app-screen::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 35%;
+    background: linear-gradient(180deg, rgba(231,76,60,0.4), transparent);
+  }
+
+  /* Notch */
+  .app-screen::after {
+    content: '';
+    position: absolute;
+    top: 6px; left: 50%;
+    transform: translateX(-50%);
+    width: 20px; height: 3px;
+    background: rgba(0,0,0,0.4);
+    border-radius: 2px;
+  }
+
+  .screen-emoji { font-size: 26px; position: relative; z-index: 1; }
+  .screen-lbl {
+    font-size: 8px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.7);
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .screen-bar {
+    position: absolute;
+    bottom: 8px;
+    left: 8px; right: 8px;
+    height: 3px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .screen-bar::after {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+  }
+  .screen-bar.s1::after { width: 72%; }
+  .screen-bar.s2::after { width: 45%; }
+  .screen-bar.s3::after { width: 88%; }
+
+  /* === PROGRESS === */
+  .progress-wrap {
+    margin: 1.25rem 1.25rem 0;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .progress-meta span {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .progress-meta #prog-label { color: var(--gold); }
+
+  .progress-track {
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--red), var(--gold));
+    border-radius: 20px;
+    width: 0%;
+    transition: width 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  }
+
+  /* === FORM BODY === */
+  .form-body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* === FIELD CARD === */
+  .field-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-md);
+    padding: 1rem 1.25rem;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .field-card:focus-within {
+    border-color: var(--gold);
+    background: rgba(255,255,255,0.07);
+  }
+  .field-card.error {
+    border-color: var(--red);
+    animation: shake 0.3s ease;
+  }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)}
+  }
+
+  .field-label {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .field-label .lbl-icon { font-size: 14px; }
+
+  input[type="text"],
+  textarea {
+    width: 100%;
+    background: rgba(0,0,0,0.35);
+    border: 1.5px solid rgba(255,255,255,0.12);
+    border-radius: var(--radius-sm);
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    resize: none;
+  }
+  input[type="text"]:focus,
+  textarea:focus { border-color: var(--gold); }
+  input::placeholder, textarea::placeholder {
+    color: rgba(255,255,255,0.3);
+    font-weight: 400;
+    font-size: 13px;
+  }
+
+  /* === RATING === */
+  .rating-row {
+    display: flex;
+    gap: 8px;
+  }
+  .rating-btn {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.15);
+    background: rgba(0,0,0,0.3);
+    color: rgba(255,255,255,0.7);
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .rating-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: scale(1.12);
+  }
+  .rating-btn.active {
+    background: linear-gradient(135deg, var(--red), var(--gold));
+    border-color: transparent;
+    color: #fff;
+    transform: scale(1.15);
+    box-shadow: 0 4px 16px rgba(245,166,35,0.4);
+  }
+
+  .rating-hint {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.45);
+    min-height: 18px;
+    transition: color 0.2s;
+  }
+  .rating-hint.filled { color: var(--gold); }
+
+  /* === RADIO === */
+  .radio-group { display: flex; flex-direction: column; gap: 8px; }
+
+  .radio-opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 14px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    background: rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .radio-opt::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(245,166,35,0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .radio-opt:hover { border-color: rgba(245,166,35,0.4); }
+  .radio-opt:hover::before { opacity: 1; }
+  .radio-opt.sel {
+    border-color: var(--gold);
+    background: rgba(245,166,35,0.08);
+  }
+  .radio-opt.sel::before { opacity: 1; }
+
+  .radio-circle {
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: transparent;
+    flex-shrink: 0;
+    position: relative;
+    transition: all 0.15s;
+  }
+  .radio-opt.sel .radio-circle {
+    border-color: var(--gold);
+    background: var(--gold);
+  }
+  .radio-opt.sel .radio-circle::after {
+    content: '';
+    position: absolute;
+    inset: 4px;
+    background: #fff;
+    border-radius: 50%;
+  }
+
+  .radio-emoji-col { font-size: 18px; }
+  .radio-txt {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.85);
+    flex: 1;
+  }
+
+  /* === DIVIDER === */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.25);
+  }
+  .divider::before, .divider::after {
+    content: ''; flex: 1; height: 1px;
+    background: rgba(255,255,255,0.08);
+  }
+
+  /* === POKÉMON SHOWCASE === */
+  .poke-scroll {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.1) transparent;
+  }
+  .poke-scroll::-webkit-scrollbar { height: 4px; }
+  .poke-scroll::-webkit-scrollbar-track { background: transparent; }
+  .poke-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+
+  .poke-card {
+    flex-shrink: 0;
+    width: 88px;
+    background: rgba(0,0,0,0.3);
+    border: 1.5px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm);
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .poke-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.3); }
+  .poke-card.fav {
+    border-color: var(--gold);
+    background: rgba(245,166,35,0.12);
+    box-shadow: 0 0 16px rgba(245,166,35,0.2);
+  }
+
+  .poke-sprite { font-size: 32px; display: block; animation: floatBall 3s ease-in-out infinite; }
+  .poke-name { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.8); margin-top: 5px; }
+  .poke-type {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .t-fire   { background: rgba(231,76,60,0.3);   color: #ff9f8a; }
+  .t-water  { background: rgba(52,152,219,0.3);   color: #7ec8ff; }
+  .t-grass  { background: rgba(46,204,113,0.3);   color: #84e8a6; }
+  .t-elec   { background: rgba(245,166,35,0.3);   color: #ffd077; }
+  .t-psy    { background: rgba(155,89,182,0.3);   color: #cc99ff; }
+  .t-norm   { background: rgba(180,180,180,0.2);  color: #ccc;    }
+  .t-drag   { background: rgba(52,73,200,0.3);    color: #7f8fff; }
+
+  /* === SUBMIT === */
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: var(--radius-md);
+    border: none;
+    background: linear-gradient(135deg, #c0392b 0%, #e74c3c 40%, #f5a623 100%);
+    background-size: 200% auto;
+    color: #fff;
+    font-family: 'Nunito', sans-serif;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .submit-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.15) 50%, transparent 60%);
+    transform: translateX(-100%);
+    transition: transform 0.5s;
+  }
+  .submit-btn:hover {
+    background-position: right center;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(231,76,60,0.45);
+  }
+  .submit-btn:hover::before { transform: translateX(100%); }
+  .submit-btn:active { transform: scale(0.98); }
+
+  /* === SUCCESS === */
+  .success-view {
+    display: none;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    animation: fadeUp 0.5s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .success-ball {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, var(--red) 50%, #fff 50%);
+    border: 5px solid var(--gold);
+    position: relative;
+    margin: 0 auto 1.5rem;
+    animation: spinBall 2s linear infinite;
+    box-shadow: 0 0 40px rgba(245,166,35,0.4);
+  }
+  .success-ball::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 24px; height: 24px;
+    background: #fff;
+    border-radius: 50%;
+    border: 4px solid var(--gold);
+    z-index: 2;
+  }
+  .success-ball::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    height: 5px;
+    background: var(--gold);
+    transform: translateY(-50%);
+  }
+
+  @keyframes spinBall {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  .success-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 14px;
+    color: var(--gold);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .success-sub {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.65);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+
+  .open-form-btn {
+    background: rgba(245,166,35,0.15);
+    border: 1.5px solid var(--gold);
+    color: var(--gold);
+    font-family: 'Nunito', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 22px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+  .open-form-btn:hover { background: rgba(245,166,35,0.25); transform: translateY(-1px); }
+
+  .success-emojis { font-size: 28px; margin-bottom: 1.25rem; letter-spacing: 4px; }
+
+  /* Footer */
+  .form-footer {
+    text-align: center;
+    padding: 0 1.25rem 1.25rem;
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+</style>
 </head>
 <body>
 
-<form class="container" action="https://docs.google.com/forms/d/e/1FAIpQLSc4jr16swDAg4CT3TD6V_JFxwO8f4MuLaift4qbBX-QwNwJCw/formResponse" method="POST">
-    
-    <h2>Avaliação PokéShop</h2>
+<!-- Floating particles -->
+<div id="particles"></div>
 
-    <div class="field-group">
-        <label>Informe seu nome *</label>
-        <input type="text" name="entry.977359702" placeholder="Treinador(a)..." required>
-    </div>
+<div class="wrapper">
+  <div class="form-card" id="main-card">
 
-    <div class="field-group">
-        <label>Sua satisfação (0-10)</label>
-        <div class="rating-grid">
-            <script>
-                for(let i=0; i<=10; i++) {
-                    document.write(`
-                        <input type="radio" id="r${i}" name="entry.1412467272" value="${i}" style="display:none">
-                        <label for="r${i}" class="rating-box">${i}</label>
-                    `);
-                }
-            </script>
+    <!-- Header -->
+    <div class="card-header">
+      <div class="deco-ball deco-ball-1"></div>
+      <div class="deco-ball deco-ball-2"></div>
+      <div class="deco-ball deco-ball-3"></div>
+      <div class="header-inner">
+        <div class="pokeball-icon"></div>
+        <div class="header-title">
+          <h1>PokéStore</h1>
+          <p>Formulário de avaliação</p>
+          <div class="type-badges">
+            <span class="type-badge badge-fire">Fogo</span>
+            <span class="type-badge badge-electric">Elétrico</span>
+            <span class="type-badge badge-water">Água</span>
+          </div>
         </div>
+      </div>
     </div>
 
-    <div class="field-group">
-        <label>Conte sua experiência</label>
-        <textarea name="entry.210202849" rows="3" placeholder="Como foi sua jornada na loja?"></textarea>
-    </div>
-
-    <div class="field-group">
-        <label>Você indicaria nossa loja?</label>
-        <div class="options-grid">
-            <input type="radio" id="op1" name="entry.845451432" value="Sim" style="display:none">
-            <label for="op1" class="option-card">⚡<br>Sim!</label>
-
-            <input type="radio" id="op2" name="entry.845451432" value="Não indicaria" style="display:none">
-            <label for="op2" class="option-card">😴<br>Não</label>
-
-            <input type="radio" id="op3" name="entry.845451432" value="Indicaria, mas com resalvas" style="display:none">
-            <label for="op3" class="option-card">🤔<br>Ressalvas</label>
-
-            <input type="radio" id="op4" name="entry.845451432" value="Indicaria depois de implementar mudanças" style="display:none">
-            <label for="op4" class="option-card">🌱<br>Mudar algo</label>
+    <!-- App Preview -->
+    <div class="app-preview">
+      <div class="preview-label">Prévia do aplicativo</div>
+      <div class="screens-grid">
+        <div class="app-screen">
+          <span class="screen-emoji">🛍️</span>
+          <span class="screen-lbl">Loja</span>
+          <div class="screen-bar s1"></div>
         </div>
+        <div class="app-screen">
+          <span class="screen-emoji">⚡</span>
+          <span class="screen-lbl">Batalhas</span>
+          <div class="screen-bar s2"></div>
+        </div>
+        <div class="app-screen">
+          <span class="screen-emoji">🎴</span>
+          <span class="screen-lbl">Coleção</span>
+          <div class="screen-bar s3"></div>
+        </div>
+      </div>
     </div>
 
-    <button type="submit">Enviar Pokédex de Feedback</button>
-</form>
+    <!-- Progress -->
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span>Progresso</span>
+        <span id="prog-label">0 / 4 campos</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="prog-fill"></div>
+      </div>
+    </div>
 
+    <!-- Form -->
+    <div class="form-body" id="form-body">
+
+      <!-- Nome -->
+      <div class="field-card" id="fc-name">
+        <div class="field-label">
+          <span class="lbl-icon">🎮</span> Nome do treinador
+        </div>
+        <input type="text" id="inp-name" placeholder="Ex: Ash Ketchum..." maxlength="80"/>
+      </div>
+
+      <!-- Nota -->
+      <div class="field-card" id="fc-rating">
+        <div class="field-label">
+          <span class="lbl-icon">⭐</span> Nota geral
+        </div>
+        <div class="rating-row">
+          <button class="rating-btn" onclick="setRating(1)">1</button>
+          <button class="rating-btn" onclick="setRating(2)">2</button>
+          <button class="rating-btn" onclick="setRating(3)">3</button>
+          <button class="rating-btn" onclick="setRating(4)">4</button>
+          <button class="rating-btn" onclick="setRating(5)">5</button>
+        </div>
+        <div class="rating-hint" id="rating-hint">Toque para avaliar</div>
+      </div>
+
+      <!-- Experiência -->
+      <div class="field-card" id="fc-exp">
+        <div class="field-label">
+          <span class="lbl-icon">💬</span> Sua experiência
+        </div>
+        <textarea id="inp-exp" rows="3" placeholder="Conte como foi usar a PokéStore..."></textarea>
+      </div>
+
+      <div class="divider">você indicaria?</div>
+
+      <!-- Indicação -->
+      <div class="field-card" id="fc-rec">
+        <div class="field-label">
+          <span class="lbl-icon">📣</span> Você indicaria o aplicativo?
+        </div>
+        <div class="radio-group">
+          <div class="radio-opt" onclick="setRec('Sim',this)">
+            <div class="radio-circle"></div>
+            <span class="radio-emoji-col">✅</span>
+            <span class="radio-txt">Sim, indicaria!</span>
+          </div>
+          <div class="radio-opt" onclick="setRec('Não indicaria',this)">
+            <div class="radio-circle"></div>
+            <span class="radio-emoji-col">❌</span>
+            <span class="radio-txt">Não indicaria</span>
+          </div>
+          <div class="radio-opt" onclick="setRec('Indicaria, mas com resalvas',this)">
+            <div class="radio-circle"></div>
+            <span class="radio-emoji-col">⚠️</span>
+            <span class="radio-txt">Indicaria, mas com ressalvas</span>
+          </div>
+          <div class="radio-opt" onclick="setRec('Indicaria depois de implementar mudanças',this)">
+            <div class="radio-circle"></div>
+            <span class="radio-emoji-col">🔧</span>
+            <span class="radio-txt">Indicaria depois de implementar mudanças</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider">seu favorito na loja</div>
+
+      <!-- Pokémon favorito -->
+      <div class="field-card">
+        <div class="field-label">
+          <span class="lbl-icon">🔴</span> Pokémon favorito
+        </div>
+        <div class="poke-scroll" id="poke-scroll"></div>
+      </div>
+
+      <button class="submit-btn" onclick="handleSubmit()">
+        ⚡ Enviar avaliação para o Professor Carvalho
+      </button>
+
+    </div>
+
+    <!-- Success -->
+    <div class="success-view" id="success-view">
+      <div class="success-ball"></div>
+      <div class="success-emojis">🎉🏆⚡</div>
+      <div class="success-title">Capturado!</div>
+      <p class="success-sub">Obrigado, treinador! Seu feedback nos ajuda a evoluir a PokéStore para o próximo nível.</p>
+      <button class="open-form-btn" onclick="openGoogleForm()">Abrir formulário oficial →</button>
+    </div>
+
+    <div class="form-footer">PokéStore © 2025 — Gotta catch 'em all</div>
+  </div>
+</div>
+
+<script>
+  // Particles
+  const particlesEl = document.getElementById('particles');
+  const colors = ['#e74c3c','#f5a623','#ffe566','#7ec8ff','#84e8a6'];
+  for(let i=0;i<18;i++){
+    const p = document.createElement('div');
+    p.className='particle';
+    const size = 4 + Math.random()*6;
+    p.style.cssText=`
+      width:${size}px;height:${size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${Math.random()*100}vw;
+      animation-duration:${8+Math.random()*12}s;
+      animation-delay:${Math.random()*12}s;
+      opacity:0.5;
+    `;
+    particlesEl.appendChild(p);
+  }
+
+  // Pokémon data
+  const pokemons = [
+    {name:'Pikachu',  emoji:'⚡', type:'elétrico', cls:'t-elec'},
+    {name:'Charizard',emoji:'🔥', type:'fogo',     cls:'t-fire'},
+    {name:'Squirtle', emoji:'💧', type:'água',     cls:'t-water'},
+    {name:'Bulbasaur',emoji:'🌿', type:'planta',   cls:'t-grass'},
+    {name:'Mewtwo',   emoji:'🔮', type:'psíquico', cls:'t-psy'},
+    {name:'Eevee',    emoji:'🦊', type:'normal',   cls:'t-norm'},
+    {name:'Gengar',   emoji:'👻', type:'fantasma', cls:'t-psy'},
+    {name:'Dragonite',emoji:'🐲', type:'dragão',   cls:'t-drag'},
+  ];
+
+  const scroll = document.getElementById('poke-scroll');
+  let favPoke = '';
+
+  pokemons.forEach(p => {
+    const card = document.createElement('div');
+    card.className='poke-card';
+    card.innerHTML=`
+      <span class="poke-sprite">${p.emoji}</span>
+      <div class="poke-name">${p.name}</div>
+      <span class="poke-type ${p.cls}">${p.type}</span>`;
+    card.onclick=()=>{
+      document.querySelectorAll('.poke-card').forEach(c=>c.classList.remove('fav'));
+      card.classList.add('fav');
+      favPoke=p.name;
+    };
+    scroll.appendChild(card);
+  });
+
+  // State
+  let rating=0, recValue='';
+
+  const ratingLabels=['','🥚 Muito fraco','😕 Fraco','😐 Razoável','😊 Bom','🏆 Excelente!'];
+
+  function setRating(v){
+    rating=v;
+    document.querySelectorAll('.rating-btn').forEach((b,i)=>b.classList.toggle('active',i<v));
+    const hint=document.getElementById('rating-hint');
+    hint.textContent=ratingLabels[v];
+    hint.classList.add('filled');
+    updateProgress();
+  }
+
+  function setRec(val,el){
+    recValue=val;
+    document.querySelectorAll('.radio-opt').forEach(r=>r.classList.remove('sel'));
+    el.classList.add('sel');
+    updateProgress();
+  }
+
+  function updateProgress(){
+    const name=document.getElementById('inp-name').value.trim();
+    const exp=document.getElementById('inp-exp').value.trim();
+    let n=0;
+    if(name) n++;
+    if(rating>0) n++;
+    if(exp) n++;
+    if(recValue) n++;
+    const pct=Math.round((n/4)*100);
+    document.getElementById('prog-fill').style.width=pct+'%';
+    document.getElementById('prog-label').textContent=n+' / 4 campos';
+  }
+
+  document.getElementById('inp-name').addEventListener('input',updateProgress);
+  document.getElementById('inp-exp').addEventListener('input',updateProgress);
+
+  function handleSubmit(){
+    const name=document.getElementById('inp-name').value.trim();
+    const exp=document.getElementById('inp-exp').value.trim();
+    const fields=[
+      {id:'fc-name', val:name},
+      {id:'fc-rating', val:rating},
+      {id:'fc-exp', val:exp},
+      {id:'fc-rec', val:recValue}
+    ];
+    let ok=true;
+    fields.forEach(f=>{
+      const el=document.getElementById(f.id);
+      if(!f.val){
+        el.classList.add('error');
+        ok=false;
+        setTimeout(()=>el.classList.remove('error'),600);
+      } else {
+        el.classList.remove('error');
+      }
+    });
+    if(!ok) return;
+    document.getElementById('prog-fill').style.width='100%';
+    document.getElementById('prog-label').textContent='✅ Completo!';
+    setTimeout(()=>{
+      document.getElementById('form-body').style.display='none';
+      document.getElementById('success-view').style.display='block';
+    },400);
+  }
+
+  function openGoogleForm(){
+    const name=document.getElementById('inp-name').value.trim()||'EXEMPLO_NOME';
+    const exp=document.getElementById('inp-exp').value.trim()||'EXEMPLO_EXPERIENCIA';
+    const rec=recValue||'Sim';
+    const url=`https://docs.google.com/forms/d/e/1FAIpQLSc4jr16swDAg4CT3TD6V_JFxwO8f4MuLaift4qbBX-QwNwJCw/viewform?usp=pp_url&entry.977359702=${encodeURIComponent(name)}&entry.1412467272=${rating||5}&entry.210202849=${encodeURIComponent(exp)}&entry.845451432=${encodeURIComponent(rec)}`;
+    window.open(url,'_blank');
+  }
+</script>
 </body>
 </html>
