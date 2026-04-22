@@ -3,119 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avaliação - PokéShop</title>
+    <title>Avaliação PokéShop - UI+</title>
     <style>
         :root {
             --pikachu-yellow: #FFCB05;
             --pokeball-blue: #3B4CCA;
-            --bg-color: #F5F5F5;
-            --text-color: #333;
+            --charizard-orange: #F2802B;
+            --bulba-green: #49D0B0;
+            --bg-color: #F8F9FA;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: var(--bg-color);
             display: flex;
             justify-content: center;
             padding: 20px;
         }
 
-        .form-card {
+        .container {
             background: white;
             padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            max-width: 600px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+            max-width: 650px;
             width: 100%;
         }
 
-        h2 { color: var(--pokeball-blue); margin-bottom: 20px; }
+        h2 { color: var(--pokeball-blue); margin-bottom: 25px; }
 
+        .field-group { margin-bottom: 25px; }
+        
+        label { display: block; margin-bottom: 8px; font-weight: 600; }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #eee;
+            border-radius: 12px;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--pokeball-blue);
+        }
+
+        /* Rating Grid 0-10 */
+        .rating-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+            gap: 8px;
+        }
+
+        .rating-box {
+            text-align: center;
+            padding: 10px 0;
+            border: 2px solid #eee;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        input[type="radio"]:checked + label.rating-box {
+            background: var(--pokeball-blue);
+            color: white;
+            border-color: var(--pokeball-blue);
+        }
+
+        /* Recommendation Cards */
         .options-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
-            margin-top: 20px;
         }
 
-        /* Esconde o radio nativo */
-        input[type="radio"] { display: none; }
-
-        /* Estilo do Card */
-        .option-label {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 12px;
+        .option-card {
+            padding: 20px;
+            border: 2px solid #eee;
+            border-radius: 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            text-align: center;
+            transition: all 0.2s;
         }
 
-        .option-label:hover {
+        input[type="radio"]:checked + .option-card {
             border-color: var(--pikachu-yellow);
-            transform: translateY(-5px);
+            background-color: #fffdf0;
         }
-
-        /* Estado Selecionado */
-        input[type="radio"]:checked + .option-label {
-            border-color: var(--pokeball-blue);
-            background-color: #f0f4ff;
-        }
-
-        .emoji { font-size: 40px; margin-bottom: 10px; }
 
         button {
             width: 100%;
-            padding: 15px;
-            margin-top: 30px;
-            background-color: var(--pikachu-yellow);
+            padding: 16px;
+            background: var(--pikachu-yellow);
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: bold;
+            font-size: 16px;
             cursor: pointer;
-            transition: background 0.3s;
+            margin-top: 20px;
         }
-
-        button:hover { background-color: #e6b800; }
     </style>
 </head>
 <body>
 
-<form action="https://docs.google.com/forms/d/e/1FAIpQLSc4jr16swDAg4CT3TD6V_JFxwO8f4MuLaift4qbBX-QwNwJCw/formResponse" method="POST" target="_blank">
+<form class="container" action="https://docs.google.com/forms/d/e/1FAIpQLSc4jr16swDAg4CT3TD6V_JFxwO8f4MuLaift4qbBX-QwNwJCw/formResponse" method="POST">
     
-    <div class="form-card">
-        <h2>Você indicaria nossa loja?</h2>
-        
-        <div class="options-grid">
-            <input type="radio" id="sim" name="entry.845451432" value="Sim" required>
-            <label for="sim" class="option-label">
-                <span class="emoji">⚡</span>
-                <span>Sim!</span>
-            </label>
+    <h2>Avaliação PokéShop</h2>
 
-            <input type="radio" id="nao" name="entry.845451432" value="Não indicaria">
-            <label for="nao" class="option-label">
-                <span class="emoji">😴</span>
-                <span>Não indicaria</span>
-            </label>
-
-            <input type="radio" id="ressalvas" name="entry.845451432" value="Indicaria, mas com resalvas">
-            <label for="ressalvas" class="option-label">
-                <span class="emoji">🤔</span>
-                <span>Com ressalvas</span>
-            </label>
-
-            <input type="radio" id="mudancas" name="entry.845451432" value="Indicaria depois de implementar mudanças">
-            <label for="mudancas" class="option-label">
-                <span class="emoji">🌱</span>
-                <span>Precisa melhorar</span>
-            </label>
-        </div>
-
-        <button type="submit">Enviar Avaliação</button>
+    <div class="field-group">
+        <label>Informe seu nome *</label>
+        <input type="text" name="entry.977359702" placeholder="Treinador(a)..." required>
     </div>
+
+    <div class="field-group">
+        <label>Sua satisfação (0-10)</label>
+        <div class="rating-grid">
+            <script>
+                for(let i=0; i<=10; i++) {
+                    document.write(`
+                        <input type="radio" id="r${i}" name="entry.1412467272" value="${i}" style="display:none">
+                        <label for="r${i}" class="rating-box">${i}</label>
+                    `);
+                }
+            </script>
+        </div>
+    </div>
+
+    <div class="field-group">
+        <label>Conte sua experiência</label>
+        <textarea name="entry.210202849" rows="3" placeholder="Como foi sua jornada na loja?"></textarea>
+    </div>
+
+    <div class="field-group">
+        <label>Você indicaria nossa loja?</label>
+        <div class="options-grid">
+            <input type="radio" id="op1" name="entry.845451432" value="Sim" style="display:none">
+            <label for="op1" class="option-card">⚡<br>Sim!</label>
+
+            <input type="radio" id="op2" name="entry.845451432" value="Não indicaria" style="display:none">
+            <label for="op2" class="option-card">😴<br>Não</label>
+
+            <input type="radio" id="op3" name="entry.845451432" value="Indicaria, mas com resalvas" style="display:none">
+            <label for="op3" class="option-card">🤔<br>Ressalvas</label>
+
+            <input type="radio" id="op4" name="entry.845451432" value="Indicaria depois de implementar mudanças" style="display:none">
+            <label for="op4" class="option-card">🌱<br>Mudar algo</label>
+        </div>
+    </div>
+
+    <button type="submit">Enviar Pokédex de Feedback</button>
 </form>
 
 </body>
